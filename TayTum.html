@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>المدپلج</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      user-select: none;
+    }
+    .outer-container {
+      width: 100vw; height: 100vh;
+      border: 10px solid black;
+      box-sizing: border-box;
+      display: flex;
+    }
+    .block {
+      border: 2px dotted grey;
+      box-sizing: border-box;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .block-name {
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 90%;
+      text-align: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    input.name-input {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: calc(100% - 4px);
+      box-sizing: border-box;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 0 2px;
+      z-index: 10;
+    }
+    .taqqasud-text {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      width: 45%;
+      font-size: 12px;
+      font-family: inherit;
+      resize: none;
+      height: 30px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      padding: 2px;
+      background: white;
+      overflow: auto;
+      user-select: text;
+      z-index: 5;
+    }
+    .tansim-text {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 45%;
+      font-size: 12px;
+      font-family: inherit;
+      resize: none;
+      height: 30px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      padding: 2px;
+      background: white;
+      overflow: auto;
+      user-select: text;
+      z-index: 5;
+    }
+    .left {
+      width: 35%; height: 100%;
+      display: flex; flex-direction: column;
+      box-sizing: border-box;
+    }
+    .left-top {
+      height: 50%; display: flex;
+      box-sizing: border-box;
+    }
+    .left-top-left {
+      width: 33.33%; display: flex;
+      flex-direction: column; box-sizing: border-box;
+      border: none; cursor: default; padding: 0;
+    }
+    .left-top-left-upper,
+    .left-top-left-lower {
+      flex: 1; border: 2px dotted grey;
+      box-sizing: border-box; position: relative;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      padding: 2px; overflow: hidden;
+      font-size: 14px; font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+    .left-top-right {
+      width: 66.66%;
+    }
+    .left-bottom {
+      height: 50%; display: flex;
+      flex-wrap: wrap; box-sizing: border-box;
+    }
+    .left-bottom-box.top {
+      width: 50%; height: 70%;
+    }
+    .left-bottom-box.bottom {
+      width: 50%; height: 30%;
+    }
+    .middle {
+      width: 30%; height: 100%;
+      display: flex; flex-direction: column;
+      box-sizing: border-box;
+      border-left: 5px solid black;
+      border-right: 5px solid black;
+    }
+    .middle-top {
+      flex: 2;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      grid-template-rows: repeat(3,1fr);
+      border-bottom: 5px solid black;
+      box-sizing: border-box;
+    }
+    .grid-item-merge {
+      grid-column: 2 / span 2;
+      grid-row: 3 / span 1;
+    }
+    .middle-bottom {
+      flex: 1; display: flex;
+      box-sizing: border-box;
+    }
+    .middle-bottom-middle {
+      width: 33%; display: flex;
+      flex-direction: column; box-sizing: border-box;
+    }
+    .middle-bottom-middle-upper, .middle-bottom-middle-lower {
+      flex: 1;
+    }
+    .middle-bottom-right {
+      width: 33%;
+    }
+    .middle-bottom-left {
+      width: 33%;
+    }
+    .right {
+      width: 35%; height: 100%;
+      display: flex; flex-direction: column;
+      box-sizing: border-box;
+      border-left: 5px solid black;
+    }
+    .right-top {
+      height: 50%; display: flex;
+      border-bottom: 5px solid black;
+      box-sizing: border-box;
+    }
+    .right-top-left {
+      width: 50%;
+    }
+    .right-top-right {
+      width: 50%; display: flex;
+      flex-direction: column; box-sizing: border-box;
+    }
+    .right-top-right-upper, .right-top-right-lower {
+      flex: 1;
+    }
+    .right-bottom {
+      height: 50%; display: flex;
+      box-sizing: border-box;
+    }
+    .right-bottom-left {
+      width: 50%;
+    }
+    .right-bottom-right {
+      display: flex; flex-direction: column;
+      box-sizing: border-box; width: 50%;
+    }
+    .right-bottom-right-upper {
+      flex: 1; display: flex;
+      box-sizing: border-box;
+    }
+    .right-bottom-right-upper-left,
+    .right-bottom-right-upper-right {
+      width: 50%;
+    }
+    .right-bottom-right-lower {
+      flex: 1;
+    }
+    #context-menu {
+      position: fixed; background: white;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000; display: none;
+      min-width: 120px; font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    #context-menu ul {
+      list-style: none; margin: 0; padding: 5px 0;
+    }
+    #context-menu ul li {
+      padding: 6px 12px; cursor: pointer;
+      user-select: none;
+    }
+    #context-menu ul li:hover {
+      background: #eee;
+    }
+    #wasf-panel {
+      position: fixed; top: 50px; right: 20px;
+      width: 320px; max-height: 70vh;
+      background: white; border: 2px solid black;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+      font-family: Arial, sans-serif;
+      overflow-y: auto; z-index: 1500;
+      display: none; padding: 10px;
+      box-sizing: border-box;
+    }
+    #wasf-panel h2 {
+      margin-top: 0; font-size: 18px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    #wasf-panel button {
+      margin: 5px 0; padding: 4px 8px;
+      font-size: 14px; cursor: pointer;
+    }
+    .category, .folder, .link {
+      margin-left: 10px; margin-top: 5px;
+    }
+    .category > .title,
+    .folder > .title {
+      font-weight: bold;
+      display: flex; justify-content: space-between;
+      align-items: center; user-select: none;
+    }
+    .folder > .title {
+      font-style: italic;
+    }
+    .link {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-left: 20px;
+    }
+    .link-name {
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; max-width: 220px;
+    }
+    .delete-btn {
+      background: none; border: none;
+      color: red; cursor: pointer;
+      font-weight: bold; font-size: 16px;
+      user-select: none; margin-left: 8px;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="outer-container">
+    <div class="left">
+      <div class="left-top">
+        <div class="left-top-left">
+          <div class="left-top-left-upper block" data-block-id="left-top-left-upper"><span class="block-name"></span></div>
+          <div class="left-top-left-lower block" data-block-id="left-top-left-lower"><span class="block-name"></span></div>
+        </div>
+        <div class="left-top-right block" data-block-id="left-top-right"><span class="block-name"></span></div>
+      </div>
+      <div class="left-bottom">
+        <div class="left-bottom-box top block" data-block-id="left-bottom-box-top-1"><span class="block-name"></span></div>
+        <div class="left-bottom-box top block" data-block-id="left-bottom-box-top-2"><span class="block-name"></span></div>
+        <div class="left-bottom-box bottom block" data-block-id="left-bottom-box-bottom-1"><span class="block-name"></span></div>
+        <div class="left-bottom-box bottom block" data-block-id="left-bottom-box-bottom-2"><span class="block-name"></span></div>
+      </div>
+    </div>
+    <div class="middle">
+      <div class="middle-top">
+        <div class="block" data-block-id="middle-top-1"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-2"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-3"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-4"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-5"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-6"><span class="block-name"></span></div>
+        <div class="block" data-block-id="middle-top-7"><span class="block-name"></span></div>
+        <div class="block grid-item-merge" data-block-id="middle-top-merged"><span class="block-name"></span></div>
+      </div>
+      <div class="middle-bottom">
+        <div class="middle-bottom-left block" data-block-id="middle-bottom-left"><span class="block-name"></span></div>
+        <div class="middle-bottom-middle">
+          <div class="middle-bottom-middle-upper block" data-block-id="middle-bottom-middle-upper"><span class="block-name"></span></div>
+          <div class="middle-bottom-middle-lower block" data-block-id="middle-bottom-middle-lower"><span class="block-name"></span></div>
+        </div>
+        <div class="middle-bottom-right block" data-block-id="middle-bottom-right"><span class="block-name"></span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="right-top">
+        <div class="right-top-left block" data-block-id="right-top-left"><span class="block-name"></span></div>
+        <div class="right-top-right">
+          <div class="right-top-right-upper block" data-block-id="right-top-right-upper"><span class="block-name"></span></div>
+          <div class="right-top-right-lower block" data-block-id="right-top-right-lower"><span class="block-name"></span></div>
+        </div>
+      </div>
+      <div class="right-bottom">
+        <div class="right-bottom-left block" data-block-id="right-bottom-left"><span class="block-name"></span></div>
+        <div class="right-bottom-right">
+          <div class="right-bottom-right-upper">
+            <div class="right-bottom-right-upper-left block" data-block-id="right-bottom-right-upper-left"><span class="block-name"></span></div>
+            <div class="right-bottom-right-upper-right block" data-block-id="right-bottom-right-upper-right"><span class="block-name"></span></div>
+          </div>
+          <div class="right-bottom-right-lower block" data-block-id="right-bottom-right-lower"><span class="block-name"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="context-menu">
+    <ul>
+      <li id="rename-option">Rename</li>
+      <li id="wasf-option">وصف</li>
+      <li id="taqqasud-option">تقصد</li>
+      <li id="tansim-option">تنسم</li>
+    </ul>
+  </div>
+
+  <div id="wasf-panel">
+    <h2>وصف</h2>
+    <button id="add-category-btn">+ إضافة فئة</button>
+    <div id="categories-container"></div>
+    <button id="close-wasf-panel" style="margin-top:10px;">إغلاق</button>
+  </div>
+
+  <script>
+  const blocks = document.querySelectorAll('.block');
+  const contextMenu = document.getElementById('context-menu');
+  const wasfPanel = document.getElementById('wasf-panel');
+  const categoriesContainer = document.getElementById('categories-container');
+  const addCategoryBtn = document.getElementById('add-category-btn');
+  const closeWasfBtn = document.getElementById('close-wasf-panel');
+
+  let currentBlock = null;
+  let currentWasfBlockId = null;
+  let editingInput = null;
+  let categories = [];
+
+  // Load saved names, taqqasud, and tansim on page load
+  blocks.forEach(block => {
+    const id = block.dataset.blockId;
+
+    const savedName = localStorage.getItem('blockName-' + id);
+    if (savedName) block.querySelector('.block-name').textContent = savedName;
+
+    const savedTaq = localStorage.getItem('taqqasud-' + id);
+    if (savedTaq) addTaqqasud(block, savedTaq);
+
+    const savedTan = localStorage.getItem('tansim-' + id);
+    if (savedTan) addTansim(block, savedTan);
+  });
+
+  // Context menu event
+  blocks.forEach(block => {
+    block.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      currentBlock = block;
+      contextMenu.style.top = `${e.clientY}px`;
+      contextMenu.style.left = `${e.clientX}px`;
+      contextMenu.style.display = 'block';
+    });
+  });
+
+  window.addEventListener('click', e => {
+    if (!contextMenu.contains(e.target)) {
+      contextMenu.style.display = 'none';
+    }
+  });
+
+  // Rename option
+  document.getElementById('rename-option').addEventListener('click', () => {
+    if (currentBlock) startEditing(currentBlock);
+    contextMenu.style.display = 'none';
+  });
+
+  // Taqqasud
+  document.getElementById('taqqasud-option').addEventListener('click', () => {
+    if (currentBlock) addTaqqasud(currentBlock);
+    contextMenu.style.display = 'none';
+  });
+
+  // Tansim
+  document.getElementById('tansim-option').addEventListener('click', () => {
+    if (currentBlock) addTansim(currentBlock);
+    contextMenu.style.display = 'none';
+  });
+
+  // Wasf
+  document.getElementById('wasf-option').addEventListener('click', () => {
+    if (!currentBlock) return;
+    currentWasfBlockId = currentBlock.dataset.blockId;
+    categories = JSON.parse(localStorage.getItem(`wasf-categories-${currentWasfBlockId}`) || '[]');
+    wasfPanel.style.display = 'block';
+    renderWasf();
+    contextMenu.style.display = 'none';
+  });
+
+  // Close Wasf Panel
+  closeWasfBtn.addEventListener('click', () => {
+    wasfPanel.style.display = 'none';
+    categories = [];
+    currentWasfBlockId = null;
+  });
+
+  // Add new category
+  addCategoryBtn.addEventListener('click', () => {
+    const catName = prompt('أدخل اسم الفئة:');
+    if (!catName) return;
+    categories.push({ id: generateId(), name: catName, folders: [] });
+    saveCategories();
+    renderWasf();
+  });
+
+  // Helper: Start editing name
+  function startEditing(block) {
+    if (editingInput) return;
+
+    const nameSpan = block.querySelector('.block-name');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'name-input';
+    input.value = nameSpan.textContent;
+
+    block.appendChild(input);
+    input.focus();
+    input.select();
+    editingInput = input;
+    block.style.pointerEvents = 'none';
+
+    function cleanup() {
+      block.style.pointerEvents = 'auto';
+      input.remove();
+      editingInput = null;
+      currentBlock = null;
+    }
+
+    function saveName() {
+      nameSpan.textContent = input.value.trim();
+      localStorage.setItem('blockName-' + block.dataset.blockId, input.value.trim());
+      cleanup();
+    }
+
+    input.addEventListener('blur', saveName);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); saveName(); }
+      if (e.key === 'Escape') { e.preventDefault(); cleanup(); }
+    });
+  }
+
+  // Helper: Add taqqasud textarea
+  function addTaqqasud(block, text = '') {
+    if (block.querySelector('.taqqasud-text')) return;
+    const taq = document.createElement('textarea');
+    taq.className = 'taqqasud-text';
+    taq.value = text;
+    taq.placeholder = 'تقصد...';
+    block.appendChild(taq);
+    taq.addEventListener('input', () => {
+      localStorage.setItem('taqqasud-' + block.dataset.blockId, taq.value);
+    });
+  }
+
+  // Helper: Add tansim textarea
+  function addTansim(block, text = '') {
+    if (block.querySelector('.tansim-text')) return;
+    const tan = document.createElement('textarea');
+    tan.className = 'tansim-text';
+    tan.value = text;
+    tan.placeholder = 'تنسم...';
+    block.appendChild(tan);
+    tan.addEventListener('input', () => {
+      localStorage.setItem('tansim-' + block.dataset.blockId, tan.value);
+    });
+  }
+
+  // Save categories for current block
+  function saveCategories() {
+    if (!currentWasfBlockId) return;
+    localStorage.setItem(`wasf-categories-${currentWasfBlockId}`, JSON.stringify(categories));
+  }
+
+  // Generate unique ID
+  function generateId() {
+    return 'id-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // Render Wasf panel
+  function renderWasf() {
+    categoriesContainer.innerHTML = '';
+
+    categories.forEach(category => {
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'category';
+
+      const catTitle = document.createElement('div');
+      catTitle.className = 'title';
+
+      const catToggle = document.createElement('span');
+      catToggle.textContent = '[-]';
+      catToggle.style.cursor = 'pointer';
+
+      let catCollapsed = false;
+      const catContent = document.createElement('div');
+
+      catToggle.addEventListener('click', () => {
+        catCollapsed = !catCollapsed;
+        catContent.style.display = catCollapsed ? 'none' : '';
+        catToggle.textContent = catCollapsed ? '[+]' : '[-]';
+      });
+
+      const catName = document.createElement('span');
+      catName.textContent = category.name || 'فئة بدون اسم';
+
+      const delCatBtn = document.createElement('button');
+      delCatBtn.className = 'delete-btn';
+      delCatBtn.textContent = '×';
+      delCatBtn.title = 'حذف الفئة';
+      delCatBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (confirm(`هل تريد حذف الفئة "${category.name}"؟`)) {
+          categories = categories.filter(c => c.id !== category.id);
+          saveCategories();
+          renderWasf();
+        }
+      });
+
+      catTitle.append(catToggle, catName, delCatBtn);
+      categoryDiv.append(catTitle, catContent);
+
+      // Folders
+      category.folders.forEach(folder => {
+        const folderDiv = document.createElement('div');
+        folderDiv.className = 'folder';
+
+        const folderTitle = document.createElement('div');
+        folderTitle.className = 'title';
+
+        const folderToggle = document.createElement('span');
+        folderToggle.textContent = '[-]';
+        folderToggle.style.cursor = 'pointer';
+
+        let folderCollapsed = false;
+        const folderContent = document.createElement('div');
+
+        folderToggle.addEventListener('click', () => {
+          folderCollapsed = !folderCollapsed;
+          folderContent.style.display = folderCollapsed ? 'none' : '';
+          folderToggle.textContent = folderCollapsed ? '[+]' : '[-]';
+        });
+
+        const folderName = document.createElement('span');
+        folderName.textContent = folder.name || 'مجلد بدون اسم';
+
+        const delFolderBtn = document.createElement('button');
+        delFolderBtn.className = 'delete-btn';
+        delFolderBtn.textContent = '×';
+        delFolderBtn.title = 'حذف المجلد';
+        delFolderBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (confirm(`هل تريد حذف المجلد "${folder.name}"؟`)) {
+            category.folders = category.folders.filter(f => f.id !== folder.id);
+            saveCategories();
+            renderWasf();
+          }
+        });
+
+        folderTitle.append(folderToggle, folderName, delFolderBtn);
+        folderDiv.append(folderTitle, folderContent);
+
+        // Links
+        folder.links.forEach(link => {
+          const linkDiv = document.createElement('div');
+          linkDiv.className = 'link';
+
+          const linkAnchor = document.createElement('a');
+          linkAnchor.className = 'link-name';
+          linkAnchor.textContent = link.name || 'رابط بدون اسم';
+          linkAnchor.href = link.url || '#';
+          linkAnchor.target = '_blank';
+          linkAnchor.rel = 'noopener noreferrer';
+
+          const delLinkBtn = document.createElement('button');
+          delLinkBtn.className = 'delete-btn';
+          delLinkBtn.textContent = '×';
+          delLinkBtn.title = 'حذف الرابط';
+          delLinkBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            if (confirm(`هل تريد حذف الرابط "${link.name}"؟`)) {
+              folder.links = folder.links.filter(l => l.id !== link.id);
+              saveCategories();
+              renderWasf();
+            }
+          });
+
+          linkDiv.append(linkAnchor, delLinkBtn);
+          folderContent.append(linkDiv);
+        });
+
+        // Add Link Button
+        const addLinkBtn = document.createElement('button');
+        addLinkBtn.textContent = '+ إضافة رابط';
+        addLinkBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          const linkName = prompt('أدخل اسم الرابط:');
+          if (!linkName) return;
+          const linkUrl = prompt('أدخل عنوان الرابط (URL):', 'https://');
+          if (!linkUrl) return;
+          folder.links.push({ id: generateId(), name: linkName, url: linkUrl });
+          saveCategories();
+          renderWasf();
+        });
+
+        folderContent.append(addLinkBtn);
+        catContent.append(folderDiv);
+      });
+
+      // Add Folder Button
+      const addFolderBtn = document.createElement('button');
+      addFolderBtn.textContent = '+ إضافة مجلد';
+      addFolderBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const folderName = prompt('أدخل اسم المجلد:');
+        if (!folderName) return;
+        category.folders.push({ id: generateId(), name: folderName, links: [] });
+        saveCategories();
+        renderWasf();
+      });
+
+      catContent.append(addFolderBtn);
+      categoriesContainer.append(categoryDiv);
+    });
+  }
+</script>
+</body>
+</html>
